@@ -1,0 +1,10 @@
+{
+  "appId": "vicpol-paperwork",
+  "name": "VicPol Paperwork",
+  "author": "VicPol Development Team",
+  "version": "1.0.0",
+  "icon": "📋",
+  "iconType": "emoji",
+  "description": "Professional arrest report and paperwork tool with cloud sync, OCR support, and 100+ pre-defined charges.",
+  "requiresPin": "no"
+}

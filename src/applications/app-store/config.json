@@ -1,0 +1,10 @@
+{
+  "appId": "app-store",
+  "name": "App Store",
+  "author": "System",
+  "version": "1.0.0",
+  "icon": "🏪",
+  "iconType": "emoji",
+  "description": "Browse and manage applications for your desktop environment.",
+  "requiresPin": "no"
+}
