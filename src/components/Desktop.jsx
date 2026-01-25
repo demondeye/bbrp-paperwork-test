@@ -9,16 +9,18 @@ import TaskbarContextMenu from './TaskbarContextMenu';
 import TaskbarIconContextMenu from './TaskbarIconContextMenu';
 import ShutdownScreen from './ShutdownScreen';
 import AppIcon from './AppIcon';
+import AboutDialog from './AboutDialog';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { getUserBackground } from '../cloudinary';
-import { getAppById } from '../utils/appRegistry';
+import { getAppById, getSystemApps, getDesktopApps } from '../utils/appRegistry';
 
 export default function Desktop({ user, onLogout, onOpenApp, openApplications = [], pinnedApps = [], installedApps = [], onTaskbarAppClick, onCloseAllApps, onPinApp, onUnpinApp, onCloseAllAppsByAppId }) {
   const [showStartMenu, setShowStartMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showPowerMenu, setShowPowerMenu] = useState(false);
   const [showUserSettings, setShowUserSettings] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isLoggingOff, setIsLoggingOff] = useState(false);
   const [isLoggingOn, setIsLoggingOn] = useState(false);
@@ -210,19 +212,36 @@ export default function Desktop({ user, onLogout, onOpenApp, openApplications = 
     setShowStartupSequence(true);
   };
 
-  // Desktop apps - show installed apps + system icons
-  const systemApps = [
-    { 
-      name: 'App Store', 
-      icon: '🏪',
-      iconType: 'emoji',
-      id: 'app-store'
-    },
+  // Desktop apps - Show ALL apps from registry (system + user installed)
+  // If it's on the desktop, it should be openable
+  const systemApps = getSystemApps().map(app => ({
+    ...app,
+    id: app.appId
+  }));
+  
+  const userApps = installedApps
+    .filter(appId => !getSystemApps().find(sysApp => sysApp.appId === appId)) // Exclude system apps
+    .map(appId => {
+      const appConfig = getAppById(appId);
+      return appConfig ? { ...appConfig, id: appConfig.appId } : null;
+    })
+    .filter(Boolean);
+  
+  const desktopApps = [...systemApps, ...userApps];
+
+  // Add decorative system icons (This PC, About, Recycle Bin)
+  const decorativeIcons = [
     { 
       name: 'This PC', 
       icon: '💻',
       iconType: 'emoji',
       id: 'pc'
+    },
+    { 
+      name: 'About', 
+      icon: 'ℹ️',
+      iconType: 'emoji',
+      id: 'about'
     },
     { 
       name: 'Recycle Bin', 
@@ -232,19 +251,21 @@ export default function Desktop({ user, onLogout, onOpenApp, openApplications = 
     }
   ];
 
-  const installedAppIcons = installedApps
-    .filter(appId => appId !== 'app-store') // Don't duplicate app-store since it's in system apps
-    .map(appId => {
-      const appConfig = getAppById(appId);
-      return appConfig ? { ...appConfig, id: appId } : null;
-    })
-    .filter(Boolean);
-
-  const desktopApps = [...installedAppIcons, ...systemApps];
+  const allDesktopIcons = [...desktopApps, ...decorativeIcons];
 
   const handleAppClick = (appId) => {
-    if (appId === 'vicpol-paperwork' || appId === 'app-store') {
-      onOpenApp(appId);
+    if (appId === 'about') {
+      // About - Opens About dialog
+      setShowAbout(true);
+    } else if (appId === 'pc' || appId === 'recycle') {
+      // Decorative icons - do nothing
+      return;
+    } else {
+      // Try to open any app that exists in the registry
+      const appConfig = getAppById(appId);
+      if (appConfig) {
+        onOpenApp(appId);
+      }
     }
   };
 
@@ -353,7 +374,7 @@ export default function Desktop({ user, onLogout, onOpenApp, openApplications = 
       >
         {/* Desktop Icons */}
         <div className="p-4 grid grid-cols-1 gap-4 auto-rows-min w-32">
-          {desktopApps.map(app => (
+          {allDesktopIcons.map(app => (
             <button
               key={app.id}
               className="flex flex-col items-center gap-1 p-2 rounded hover:bg-white/10 transition-colors group"
@@ -568,15 +589,9 @@ export default function Desktop({ user, onLogout, onOpenApp, openApplications = 
             const isOpen = !!openApp;
             const isMinimized = openApp?.isMinimized || false;
             
-            // App configurations
-            const appConfig = {
-              'vicpol-paperwork': { icon: '📋', name: 'VicPol Paperwork' },
-              'app-store': { icon: '🏪', name: 'App Store' },
-              'sheriff': { icon: '🤠', name: 'Sheriff Department' },
-              'police': { icon: '👮', name: 'Police Department' }
-            };
-            
-            const config = appConfig[appId] || { icon: '❓', name: appId };
+            // Get app config from registry
+            const appConfig = getAppById(appId);
+            if (!appConfig) return null;
             
             return (
               <button 
@@ -601,9 +616,14 @@ export default function Desktop({ user, onLogout, onOpenApp, openApplications = 
                     isOpen
                   });
                 }}
-                title={config.name}
+                title={appConfig.name}
               >
-                <span className="text-xl">{config.icon}</span>
+                <AppIcon 
+                  icon={appConfig.icon} 
+                  iconType={appConfig.iconType} 
+                  size="small"
+                  className="text-xl"
+                />
                 {/* Indicator dot for open windows */}
                 {isOpen && (
                   <div className="absolute bottom-0.5 w-1 h-1 bg-blue-400 rounded-full"></div>
@@ -645,6 +665,9 @@ export default function Desktop({ user, onLogout, onOpenApp, openApplications = 
           </button>
         </div>
       </div>
+
+      {/* About Dialog */}
+      {showAbout && <AboutDialog onClose={() => setShowAbout(false)} />}
     </div>
   );
 }

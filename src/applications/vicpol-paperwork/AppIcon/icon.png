@@ -1,0 +1,25 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="115" fill="url(#gradient)"/>
+  
+  <!-- Clipboard icon -->
+  <path d="M160 120C160 97.9086 177.909 80 200 80H220C220 62.3268 234.327 48 252 48H260C277.673 48 292 62.3268 292 80H312C334.091 80 352 97.9086 352 120V140H160V120Z" fill="white" opacity="0.9"/>
+  <rect x="140" y="140" width="232" height="320" rx="20" fill="white"/>
+  
+  <!-- Lines representing text -->
+  <rect x="180" y="200" width="152" height="12" rx="6" fill="#007AFF" opacity="0.6"/>
+  <rect x="180" y="240" width="120" height="12" rx="6" fill="#007AFF" opacity="0.4"/>
+  <rect x="180" y="280" width="140" height="12" rx="6" fill="#007AFF" opacity="0.4"/>
+  <rect x="180" y="320" width="100" height="12" rx="6" fill="#007AFF" opacity="0.4"/>
+  
+  <!-- Checkmark -->
+  <circle cx="190" cy="380" r="20" fill="#34C759"/>
+  <path d="M184 380L188 384L196 376" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1E3A8A"/>
+      <stop offset="1" stop-color="#3B82F6"/>
+    </linearGradient>
+  </defs>
+</svg>

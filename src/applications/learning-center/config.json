@@ -1,0 +1,11 @@
+{
+  "appId": "learning-center",
+  "name": "Learning Center",
+  "author": "VicPol System",
+  "version": "1.0.0",
+  "icon": "📚",
+  "iconType": "emoji",
+  "description": "Department handbooks, policies, procedures, and training materials",
+  "requiresPin": "no",
+  "isSystemApp": false
+}

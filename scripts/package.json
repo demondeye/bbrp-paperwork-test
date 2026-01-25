@@ -1,0 +1,12 @@
+{
+  "name": "vicpol-registry-admin",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Registry administration tools for VicPol Desktop",
+  "scripts": {
+    "generate": "node generateRegistryAuth.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  }
+}

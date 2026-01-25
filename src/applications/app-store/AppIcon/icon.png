@@ -1,0 +1,21 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="115" fill="url(#gradient)"/>
+  
+  <!-- Shopping bag icon -->
+  <path d="M200 180C200 138.579 233.579 105 275 105H237C195.579 105 162 138.579 162 180V190H350V180C350 138.579 316.421 105 275 105H237C278.421 105 312 138.579 312 180" stroke="white" stroke-width="24" stroke-linecap="round"/>
+  
+  <!-- Bag body -->
+  <rect x="140" y="190" width="232" height="280" rx="30" fill="white"/>
+  
+  <!-- A symbol -->
+  <path d="M256 280L226 380H246L256 350L266 380H286L256 280Z" fill="#007AFF"/>
+  <path d="M240 330H272" stroke="#007AFF" stroke-width="8" stroke-linecap="round"/>
+  
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#007AFF"/>
+      <stop offset="1" stop-color="#5856D6"/>
+    </linearGradient>
+  </defs>
+</svg>

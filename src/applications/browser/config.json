@@ -1,0 +1,11 @@
+{
+  "appId": "browser",
+  "name": "Browser",
+  "author": "System",
+  "version": "1.0.0",
+  "icon": "🌐",
+  "iconType": "emoji",
+  "description": "Browse the web with a Brave-style interface",
+  "requiresPin": "no",
+  "isSystemApp": true
+}

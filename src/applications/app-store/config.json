@@ -3,8 +3,9 @@
   "name": "App Store",
   "author": "System",
   "version": "1.0.0",
-  "icon": "🏪",
-  "iconType": "emoji",
+  "icon": "./AppIcon/icon.png",
+  "iconType": "image",
   "description": "Browse and manage applications for your desktop environment.",
-  "requiresPin": "no"
+  "requiresPin": "no",
+  "isSystemApp": true
 }

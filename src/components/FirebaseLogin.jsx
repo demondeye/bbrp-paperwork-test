@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
+import { getDefaultInstalledApps } from '../utils/appRegistry';
 
 export default function FirebaseLogin({ onLogin }) {
   const [isSignup, setIsSignup] = useState(false);
@@ -55,7 +56,7 @@ export default function FirebaseLogin({ onLogin }) {
           email: fullEmail,
           username: formData.username,
           fullName: formData.fullName,
-          installedApps: ['vicpol-paperwork', 'app-store'], // Default installed apps
+          installedApps: getDefaultInstalledApps(), // Get from registry
           createdAt: new Date().toISOString()
         });
 

@@ -8,8 +8,10 @@ import FirebaseLogin from './components/FirebaseLogin';
 import LoginScreen from './components/LoginScreen';
 import VicPolApp from './applications/vicpol-paperwork/VicPolApp';
 import AppStore from './applications/app-store/AppStore';
+import BrowserApp from './applications/browser/BrowserApp';
+import LearningCenter from './applications/learning-center/LearningCenter';
 import Window from './components/Window';
-import { getAppById } from './utils/appRegistry';
+import { getAppById, getDefaultInstalledApps } from './utils/appRegistry';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -20,7 +22,7 @@ function App() {
     const saved = localStorage.getItem('pinnedApps');
     return saved ? JSON.parse(saved) : ['vicpol-paperwork']; // VicPol pinned by default
   });
-  const [installedApps, setInstalledApps] = useState(['vicpol-paperwork', 'app-store']); // Will be loaded from Firestore
+  const [installedApps, setInstalledApps] = useState(getDefaultInstalledApps()); // Will be loaded from Firestore
 
   // Check for first visit and handle startup screen
   useEffect(() => {
@@ -56,7 +58,7 @@ function App() {
       } else {
         setUser(null);
         // Reset to default when logged out
-        setInstalledApps(['vicpol-paperwork', 'app-store']);
+        setInstalledApps(getDefaultInstalledApps());
       }
     });
 
@@ -100,9 +102,19 @@ function App() {
   };
 
   const handleOpenApp = (appId) => {
-    // Check if app is installed
-    if (!installedApps.includes(appId)) {
-      console.log('App not installed:', appId);
+    // Get app config from registry
+    const appConfig = getAppById(appId);
+    
+    // If app doesn't exist in registry at all, reject
+    if (!appConfig) {
+      console.log('App not found in registry:', appId);
+      return;
+    }
+    
+    // System apps can always open (from registry)
+    // User apps need to be installed
+    if (!appConfig.isSystemApp && !installedApps.includes(appId)) {
+      console.log('User app not installed:', appId);
       return;
     }
 
@@ -119,9 +131,6 @@ function App() {
         )
       );
     } else {
-      // Load app config from registry
-      const appConfig = getAppById(appId) || { name: appId, icon: '❓' };
-
       // Open new instance
       const newApp = {
         id: appId,
@@ -311,11 +320,56 @@ function App() {
               startMaximized={false}
             >
               <AppStore
+                user={user}
                 installedApps={installedApps}
                 onInstallApp={handleInstallApp}
                 onUninstallApp={handleUninstallApp}
                 onOpenApp={handleOpenApp}
               />
+            </Window>
+          );
+        }
+        
+        if (app.id === 'browser') {
+          return (
+            <Window
+              key={app.id}
+              title={app.name}
+              icon={app.icon}
+              onClose={() => handleCloseApp(app.id)}
+              onMinimize={() => handleMinimizeApp(app.id)}
+              isMinimized={app.isMinimized}
+              zIndex={app.zIndex}
+              defaultWidth={1400}
+              defaultHeight={900}
+              startMaximized={false}
+            >
+              <BrowserApp
+                user={user}
+                onClose={() => handleCloseApp(app.id)}
+                onMinimize={() => handleMinimizeApp(app.id)}
+                isMinimized={app.isMinimized}
+                zIndex={app.zIndex}
+              />
+            </Window>
+          );
+        }
+        
+        if (app.id === 'learning-center') {
+          return (
+            <Window
+              key={app.id}
+              title={app.name}
+              icon={app.icon}
+              onClose={() => handleCloseApp(app.id)}
+              onMinimize={() => handleMinimizeApp(app.id)}
+              isMinimized={app.isMinimized}
+              zIndex={app.zIndex}
+              defaultWidth={1200}
+              defaultHeight={800}
+              startMaximized={false}
+            >
+              <LearningCenter user={user} />
             </Window>
           );
         }
